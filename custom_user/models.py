@@ -24,7 +24,9 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=250, blank=True, null=True)
     verified = models.BooleanField(default=True)
     website = models.URLField(blank=True, null=True)
-
-
     avatar = models.ImageField(upload_to='user_directory_path', blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+    def __str__(self):
+        return f'{self.type_of_user} - {self.basic_user}'
