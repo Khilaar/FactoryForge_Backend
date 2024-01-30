@@ -1,7 +1,5 @@
 from django.db import models
 
-from inventory.models import Inventory
-
 
 # Create your models here.
 class RawMaterial(models.Model):
@@ -9,4 +7,4 @@ class RawMaterial(models.Model):
     quantity = models.IntegerField()
     restock_required = models.BooleanField(default=False)
     max_quantity = models.IntegerField()
-    inventory = models.ForeignKey(Inventory, on_delete=models.PROTECT)
+    inventory = models.ForeignKey('inventory.Inventory', on_delete=models.PROTECT)

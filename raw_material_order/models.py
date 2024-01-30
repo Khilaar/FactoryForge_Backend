@@ -12,9 +12,9 @@ class RawMaterialOrder(models.Model):
     supplier = models.ForeignKey('custom_user.CustomUser', on_delete=models.CASCADE)
     raw_material = models.ManyToManyField('raw_material.RawMaterial')
     quantity = models.IntegerField()
-    order = models.JSONField()
+    order = models.JSONField(null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=True)
-    delivery_date = models.DateTimeField(blank=True)
+    delivery_date = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
 
     def __str__(self):
