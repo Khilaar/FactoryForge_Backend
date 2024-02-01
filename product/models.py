@@ -7,13 +7,11 @@ class Product(models.Model):
         (1, 'Created'),
         (2, 'In Progress'),
         (3, 'Quality Control'),
-        (4, 'Ready for Shipping'),
-        (5, 'In Transit'),
-        (6, 'Completed')
+        (4, 'Completed')
     ]
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True)
-    quantity = models.IntegerField(default=0)
+    quantity_available = models.IntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=5)
     production_status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     production_cost = models.DecimalField(decimal_places=2, max_digits=5)
