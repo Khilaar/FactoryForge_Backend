@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "product",
     "raw_material",
     "raw_material_order",
+    "product_inventory"
 ]
 
 MIDDLEWARE = [
