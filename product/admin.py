@@ -7,7 +7,7 @@ from product.models import Product
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
         'title', 'description', 'quantity_available', 'price', 'production_status', 'production_cost', 'category',
-        'requirements',)
+        'raw_material_requirements',)
 
 
 admin.site.register(Product, ProductAdmin)

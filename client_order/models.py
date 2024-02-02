@@ -13,7 +13,7 @@ class ClientOrder(models.Model):
     ]
 
     client = models.ForeignKey('custom_user.CustomUser', on_delete=models.CASCADE)
-    products = models.ManyToManyField('product.Product', blank=True)
+    ordered_products = models.ManyToManyField('product.Product', blank=True)
     client_note = models.TextField(blank=True, null=True)
     due_date = models.DateField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
