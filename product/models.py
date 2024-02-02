@@ -20,3 +20,4 @@ class Product(models.Model):
     category = models.CharField(max_length=250, blank=True, null=True)
     raw_materials = models.ManyToManyField('raw_material.RawMaterial', blank=True)
     requirements = models.JSONField(null=True, blank=True)
+
