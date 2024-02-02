@@ -9,4 +9,7 @@ class Inventory(models.Model):
     user = OneToOneField('custom_user.CustomUser', on_delete=models.PROTECT)
     last_restock = models.DateTimeField(auto_now=True, blank=True)
 
+    def __str__(self):
+        return f'{self.name}'
+
 
