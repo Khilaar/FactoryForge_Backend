@@ -17,4 +17,4 @@ class Product(models.Model):
     production_cost = models.DecimalField(decimal_places=2, max_digits=5)
     category = models.CharField(max_length=250, blank=True, null=True)
     raw_materials = models.ManyToManyField('raw_material.RawMaterial', blank=True)
-    requirements = models.JSONField(null=True, blank=True)
+    raw_material_requirements = models.JSONField(null=True, blank=True)
