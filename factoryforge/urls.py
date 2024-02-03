@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/client_orders/', include('client_order.urls')),
     path('api/suppliers/', include('supplier.urls')),
     path('api/raw_materials_orders/', include('raw_material_order.urls')),
+    path('api/analytics/', include('analytics.urls')),
 
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
