@@ -23,6 +23,7 @@ class CustomUser(AbstractUser):
     address = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=250, blank=True, null=True)
     state = models.CharField(max_length=250, blank=True, null=True)
+    zipcode = models.CharField(max_length=250, blank=True, null=True)
     country = models.CharField(max_length=250, blank=True, null=True)
     phone_number = models.CharField(max_length=250, blank=True, null=True)
     verified = models.BooleanField(default=True)

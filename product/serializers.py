@@ -12,38 +12,41 @@ class RawMaterialRequirementSerializer(serializers.Serializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'title', 'description', 'quantity', 'price', 'production_status', 'production_cost', 'category',
-                  'raw_materials', 'requirements']
+        fields = ['id', 'title', 'description', 'quantity_available', 'price', 'production_status', 'production_cost',
+                  'category', 'raw_materials', 'raw_material_requirements']
 
     def create(self, validated_data):
-        requirements_data = validated_data.pop('requirements', [])
+        requirements_data = validated_data.pop('raw_material_requirements', [])
         product = Product.objects.create(**validated_data)
 
+        product_requirements = {}
+        
         if requirements_data:
-            for requirement_data in requirements_data:
-                raw_material_name = requirement_data['raw_material_name']
-                quantity = requirement_data['quantity']
+            for raw_material_name, quantity in requirements_data.items():
                 try:
-                    raw_material_id = RawMaterial.objects.values_list('id', flat=True).get(name=raw_material_name)
+                    raw_material_id = RawMaterial.objects.get(name=raw_material_name)
                 except RawMaterial.DoesNotExist:
-                    print('RawMaterial does not exist')
-                    break
-                product.requirements.create(raw_material_id=raw_material_id, quantity=quantity)
+                    raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
+                product_requirements[raw_material_id] = quantity
+
+        product.raw_material_requirements = product_requirements
+        product.save()
         return product
 
     def update(self, instance, validated_data):
-        requirements_data = validated_data.pop('requirements', [])
+        requirements_data = validated_data.pop('raw_material_requirements', [])
         instance = super().update(instance, validated_data)
 
-        instance.requirements.all().delete()
+        product_requirements_update = {}
+
         if requirements_data:
-            for requirement_data in requirements_data:
-                raw_material_name = requirement_data['raw_material_name']
-                quantity = requirement_data['quantity']
+            for raw_material_name, quantity in requirements_data.items():
                 try:
-                    raw_material_id = RawMaterial.objects.values_list('id', flat=True).get(name=raw_material_name)
+                    raw_material_id = RawMaterial.objects.get(name=raw_material_name)
                 except RawMaterial.DoesNotExist:
-                    print('RawMaterial does not exist')
-                    break
-                instance.requirements.create(raw_material_id=raw_material_id, quantity=quantity)
+                    raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
+                product_requirements_update[raw_material_id] = quantity
+
+        instance.raw_material_requirements = product_requirements_update
+        instance.save()
         return instance

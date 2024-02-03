@@ -153,7 +153,7 @@ if SERVER_TYPE == 'prod':
     AWS_SECRET_ACCESS_KEY = os.environ.get('DO_SPACES_SECRET')  # Spaces access secret
     AWS_STORAGE_BUCKET_NAME = os.environ.get('DO_SPACES_SPACE_NAME')  # Name of the space
     AWS_S3_ENDPOINT_URL = os.environ.get('DO_SPACES_ENDPOINT')  # Endpoint found under Spaces/<your-space>/Settings
-    MEDIA_URL = 'https://group3-motion-backend.fra1.digitaloceanspaces.com/media/'
+    MEDIA_URL = 'https://factoryforge.fra1.digitaloceanspaces.com/media/'
 else:
     MEDIA_URL = 'media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
