@@ -11,7 +11,6 @@ from raw_material.models import RawMaterial
 #######################################################################################################
 
 #Here we Can create an view an Inventory. The User at the moment can create only one inventory
-"""TODO: Find Solution for second Inventory for Products"""
 class ListCreateInventoryView(ListCreateAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
@@ -53,3 +52,4 @@ class RawMaterialDetailView(RetrieveAPIView):
         return obj
 
 #######################################################################################################
+

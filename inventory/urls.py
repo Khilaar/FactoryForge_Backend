@@ -1,7 +1,6 @@
 from django.urls import path
 
 from inventory.views import ListCreateInventoryView, RawMaterialsByInventoryView, RawMaterialDetailView
-from product.views import RetrieveUpdateDeleteProduct
 
 urlpatterns = [
     path('', ListCreateInventoryView.as_view()),

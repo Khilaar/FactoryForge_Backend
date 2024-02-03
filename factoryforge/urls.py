@@ -29,5 +29,4 @@ urlpatterns = [
     path('api/client_orders/', include('client_order.urls')),
     path('api/suppliers/', include('supplier.urls')),
     path('api/raw_materials_orders/', include('raw_material_order.urls')),
-
 ]

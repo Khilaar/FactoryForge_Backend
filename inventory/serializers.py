@@ -15,7 +15,7 @@ class InventorySerializer(serializers.ModelSerializer):
 class RawMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = RawMaterial
-        fields = ['id', 'name', 'quantity', 'restock_required', 'max_quantity', 'inventory']
+        fields = ['id', 'name', 'restock_required', 'max_quantity', 'inventory']
 
 #######################################################################################################
 
