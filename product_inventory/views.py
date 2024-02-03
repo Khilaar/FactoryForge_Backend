@@ -24,3 +24,5 @@ class ProductsByInventoryView(ListAPIView):
         return Product.objects.filter(inventory__name=inventory_name)
 
 #######################################################################################################
+
+"""TODO: GET SINGLE PRODUCT IN INVENTORY (SEE INVENTORY APP)"""
