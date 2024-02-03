@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import OneToOneField
+
+from inventory.models import Inventory
 
 
 def user_directory_path(instance, filename):
@@ -28,6 +31,7 @@ class CustomUser(AbstractUser):
     avatar = models.ImageField(upload_to='user_directory_path', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated = models.DateTimeField(auto_now=True, blank=True, null=True)
+
 
     def __str__(self):
         return f'{self.type_of_user} - {self.basic_user}'
