@@ -8,3 +8,6 @@ class RawMaterial(models.Model):
     restock_required = models.BooleanField(default=False)
     max_quantity = models.IntegerField()
     inventory = models.ForeignKey('inventory.Inventory', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name

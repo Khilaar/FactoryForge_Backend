@@ -10,6 +10,14 @@ class InventorySerializer(serializers.ModelSerializer):
         model = Inventory
         fields = ['id', 'name', 'description', 'user', 'last_restock']
 
+    def create(self, validated_data):
+        if 'user' not in validated_data:
+            user = self.context['request'].user
+            validated_data['user'] = user
+            return validated_data
+        else:
+            return validated_data
+
 #######################################################################################################
 
 class RawMaterialSerializer(serializers.ModelSerializer):

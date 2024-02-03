@@ -22,6 +22,6 @@ class ClientOrder(models.Model):
     processing_time = models.DurationField(blank=True, null=True)
     order_status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     nr_products = models.IntegerField()
-    nr_products_completed = models.IntegerField()
+    nr_products_completed = models.IntegerField(default=0)
     order_and_quantities = models.JSONField(null=True, blank=True)
     tracking_number = models.CharField(max_length=250, blank=True, null=True)
