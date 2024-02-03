@@ -5,7 +5,7 @@ from django.db.models import OneToOneField, TextField
 class ProductInventory(models.Model):
     name = models.CharField(max_length=250)
     description = TextField(blank=True, null=True)
-    user = OneToOneField('custom_user.CustomUser', on_delete=models.PROTECT)
+    user = OneToOneField('custom_user.CustomUser', on_delete=models.PROTECT, blank=True, null=True)
     last_restock = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
