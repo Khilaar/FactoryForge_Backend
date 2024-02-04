@@ -39,11 +39,10 @@ class RawMaterialDetailView(RetrieveAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        queryset = self.filter_queryset(queryset)
 
         name = self.kwargs['name'].lower()
 
-        filter_kwargs = {self.lookup_field + '__iexact': name}
+        filter_kwargs = {self.lookup_field + '__icontains': name}
         obj = queryset.filter(**filter_kwargs).first()
 
         if obj is None:
