@@ -1,6 +1,4 @@
 from django.db import transaction
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from rest_framework import serializers
 
 from custom_user.models import CustomUser
@@ -64,7 +62,7 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
         if len(raw_materials_ordered_data) > 0:
             for raw_material_name, quantity in raw_materials_ordered_data.items():
                 try:
-                    raw_material = RawMaterial.objects.get(name=raw_material_name)
+                    raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
                 except RawMaterial.DoesNotExist:
                     raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
                 rawmats_order_update[raw_material.id] = quantity

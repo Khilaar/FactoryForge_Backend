@@ -49,16 +49,19 @@ class ClientOrderSerializer(serializers.ModelSerializer):
 
         for product_name, quantity in order_data.items():
             try:
-                product_id = Product.objects.get(title=product_name).id
+                product = Product.objects.get(title__iexact=product_name)
             except Product.DoesNotExist:
                 raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
-            specifics[product_id] = quantity
+            specifics[product.id] = quantity
 
         client_order.order_and_quantities = specifics
         client_order.save()
         return client_order
 
     def update(self, instance, validated_data):
+        if instance.order_status == 6:
+            raise serializers.ValidationError('This order has already been completed.')
+
         order_data = validated_data.pop('order_and_quantities', [])
         product_ids = validated_data.pop('ordered_products', [])
 
@@ -67,20 +70,18 @@ class ClientOrderSerializer(serializers.ModelSerializer):
 
         if instance.client.type_of_user != 'C':
             raise serializers.ValidationError('User is not of type client.')
-        if not order_data:
-            raise serializers.ValidationError('Order not defined.')
 
         instance.ordered_products.set(product_ids)
 
-        for product_name, quantity in order_data.items():
-            try:
-                product_id = Product.objects.get(title=product_name).id
-            except Product.DoesNotExist:
-                raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
+        if len(order_data) > 0:
+            for product_name, quantity in order_data.items():
+                try:
+                    product = Product.objects.get(title__iexact=product_name)
+                except Product.DoesNotExist:
+                    raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
+                order_quantities_update[product.id] = quantity
+            instance.order_and_quantities = order_quantities_update
 
-            order_quantities_update[product_id] = quantity
-
-        instance.order_and_quantities = order_quantities_update
         instance.save()
         return instance
 
