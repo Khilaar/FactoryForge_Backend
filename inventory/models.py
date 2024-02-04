@@ -4,8 +4,8 @@ from django.db.models import OneToOneField
 
 # Create your models here.
 class Inventory(models.Model):
-    name = models.CharField(max_length=250)
-    description = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=250, default='raw_material_inventory')
+    description = models.TextField(blank=True, null=True, default='This inventory holds all raw materials.')
     user = OneToOneField('custom_user.CustomUser', on_delete=models.PROTECT)
     last_restock = models.DateTimeField(auto_now=True, blank=True)
 
