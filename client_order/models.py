@@ -1,5 +1,7 @@
 from django.db import models
 
+from analytics.models import Analytics
+
 
 # Create your models here.
 class ClientOrder(models.Model):
@@ -25,3 +27,4 @@ class ClientOrder(models.Model):
     nr_products_completed = models.IntegerField(default=0)
     order_and_quantities = models.JSONField(null=True, blank=True)
     tracking_number = models.CharField(max_length=250, blank=True, null=True)
+    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, related_name='client_orders', default=None, blank=True, null=True)

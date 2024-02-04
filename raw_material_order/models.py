@@ -1,5 +1,7 @@
 from django.db import models
 
+from analytics.models import Analytics
+
 
 # Create your models here.
 class RawMaterialOrder(models.Model):
@@ -16,6 +18,7 @@ class RawMaterialOrder(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
+    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, default=None, null=True)
 
     def __str__(self):
         return self.supplier.username
