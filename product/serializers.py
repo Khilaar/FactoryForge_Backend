@@ -20,14 +20,14 @@ class ProductSerializer(serializers.ModelSerializer):
         product = Product.objects.create(**validated_data)
 
         product_requirements = {}
-        
+
         if requirements_data:
             for raw_material_name, quantity in requirements_data.items():
                 try:
-                    raw_material_id = RawMaterial.objects.get(name=raw_material_name)
+                    raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
                 except RawMaterial.DoesNotExist:
                     raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
-                product_requirements[raw_material_id] = quantity
+                product_requirements[raw_material.id] = quantity
 
         product.raw_material_requirements = product_requirements
         product.save()
@@ -39,14 +39,14 @@ class ProductSerializer(serializers.ModelSerializer):
 
         product_requirements_update = {}
 
-        if requirements_data:
+        if len(requirements_data) > 0:
             for raw_material_name, quantity in requirements_data.items():
                 try:
-                    raw_material_id = RawMaterial.objects.get(name=raw_material_name)
+                    raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
                 except RawMaterial.DoesNotExist:
                     raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
-                product_requirements_update[raw_material_id] = quantity
+                product_requirements_update[raw_material.id] = quantity
+            instance.raw_material_requirements = product_requirements_update
 
-        instance.raw_material_requirements = product_requirements_update
         instance.save()
         return instance
