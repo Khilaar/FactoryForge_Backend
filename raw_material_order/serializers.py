@@ -1,3 +1,6 @@
+from django.db import transaction
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from rest_framework import serializers
 
 from custom_user.models import CustomUser
@@ -47,6 +50,9 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
         return rawmats_order
 
     def update(self, instance, validated_data):
+        if instance.status == 3:
+            raise serializers.ValidationError('This order has already been completed.')
+
         raw_materials_ordered_data = validated_data.pop('raw_materials_order', [])
         instance = super().update(instance, validated_data)
 
@@ -55,15 +61,15 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
 
         rawmats_order_update = {}
 
-        if raw_materials_ordered_data:
+        if len(raw_materials_ordered_data) > 0:
             for raw_material_name, quantity in raw_materials_ordered_data.items():
                 try:
                     raw_material = RawMaterial.objects.get(name=raw_material_name)
                 except RawMaterial.DoesNotExist:
                     raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
                 rawmats_order_update[raw_material.id] = quantity
+            instance.raw_materials_order = rawmats_order_update
 
-        instance.raw_materials_order = rawmats_order_update
         instance.save()
         return instance
 
@@ -72,3 +78,20 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
         representation['supplier'] = CustomSupplierSerializer(instance.supplier).data
         representation['raw_materials'] = CustomRawMaterialsSerializer(instance.raw_materials.all(), many=True).data
         return representation
+
+    def save(self, *args, **kwargs):
+        if self.validated_data.get('status') == 3:
+            with transaction.atomic():
+                super().save(*args, **kwargs)
+                raw_materials_order_data = self.data.get('raw_materials_order', {})
+                for raw_material_id, quantity in raw_materials_order_data.items():
+                    try:
+                        raw_material = RawMaterial.objects.get(id=raw_material_id)
+                    except RawMaterial.DoesNotExist:
+                        raise serializers.ValidationError(f'RawMaterial with ID "{raw_material_id}" does not exist')
+                    raw_material.quantity_available += quantity
+                    raw_material.save()
+        else:
+            super().save(*args, **kwargs)
+
+
