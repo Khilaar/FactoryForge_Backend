@@ -1,5 +1,7 @@
 from django.db import models
 
+from product_inventory.models import ProductInventory
+
 
 # Create your models here.
 class Product(models.Model):
@@ -18,3 +20,7 @@ class Product(models.Model):
     category = models.CharField(max_length=250, blank=True, null=True)
     raw_materials = models.ManyToManyField('raw_material.RawMaterial', blank=True)
     requirements = models.JSONField(null=True, blank=True)
+    inventory = models.ForeignKey(ProductInventory, on_delete=models.PROTECT, related_name='products', null=True, blank=True)
+
+    def __str__(self):
+        return self.title
