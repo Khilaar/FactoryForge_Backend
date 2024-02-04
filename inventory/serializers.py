@@ -14,9 +14,8 @@ class InventorySerializer(serializers.ModelSerializer):
         if 'user' not in validated_data:
             user = self.context['request'].user
             validated_data['user'] = user
-            return validated_data
-        else:
-            return validated_data
+
+        return super().create(validated_data)
 
 #######################################################################################################
 

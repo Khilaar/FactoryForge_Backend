@@ -22,7 +22,7 @@ class ListCreateInventoryView(ListCreateAPIView):
 class RawMaterialsByInventoryView(ListAPIView):
     serializer_class = RawMaterialSerializer
     def get_queryset(self):
-        inventory_name = self.kwargs['inventory_name']
+        inventory_name = Inventory.objects.first()
         return RawMaterial.objects.filter(inventory__name=inventory_name)
 
 #######################################################################################################
@@ -32,7 +32,7 @@ class RawMaterialDetailView(RetrieveAPIView):
     serializer_class = RawMaterialSerializer
 
     def get_queryset(self):
-        inventory_name = self.kwargs['inventory_name']
+        inventory_name = Inventory.objects.first()
         return RawMaterial.objects.filter(inventory__name=inventory_name)
 
     lookup_field = 'name'
