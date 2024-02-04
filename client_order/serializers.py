@@ -1,5 +1,6 @@
 import uuid
 
+from django.db import transaction
 from rest_framework import serializers
 
 from client_order.models import ClientOrder
@@ -34,28 +35,28 @@ class ClientOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         order_data = validated_data.pop('order_and_quantities', [])
         product_ids = validated_data.pop('ordered_products', [])
+        with transaction.atomic():
+            client_order = ClientOrder.objects.create(**validated_data)
+            client_order.tracking_number = self.generate_tracking_number(client_order)
 
-        client_order = ClientOrder.objects.create(**validated_data)
-        client_order.tracking_number = self.generate_tracking_number(client_order)
+            specifics = {}
 
-        specifics = {}
+            if client_order.client.type_of_user != 'C':
+                raise serializers.ValidationError('User is not of type client.')
+            if not order_data:
+                raise serializers.ValidationError('Order not defined.')
 
-        if client_order.client.type_of_user != 'C':
-            raise serializers.ValidationError('User is not of type client.')
-        if not order_data:
-            raise serializers.ValidationError('Order not defined.')
+            client_order.ordered_products.set(product_ids)
 
-        client_order.ordered_products.set(product_ids)
+            for product_name, quantity in order_data.items():
+                try:
+                    product = Product.objects.get(title__iexact=product_name)
+                except Product.DoesNotExist:
+                    raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
+                specifics[product.id] = quantity
 
-        for product_name, quantity in order_data.items():
-            try:
-                product = Product.objects.get(title__iexact=product_name)
-            except Product.DoesNotExist:
-                raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
-            specifics[product.id] = quantity
-
-        client_order.order_and_quantities = specifics
-        client_order.save()
+            client_order.order_and_quantities = specifics
+            client_order.save()
         return client_order
 
     def update(self, instance, validated_data):
@@ -65,30 +66,31 @@ class ClientOrderSerializer(serializers.ModelSerializer):
         order_data = validated_data.pop('order_and_quantities', [])
         product_ids = validated_data.pop('ordered_products', [])
 
-        instance = super().update(instance, validated_data)
-        order_quantities_update = {}
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+            order_quantities_update = {}
 
-        if instance.client.type_of_user != 'C':
-            raise serializers.ValidationError('User is not of type client.')
+            if instance.client.type_of_user != 'C':
+                raise serializers.ValidationError('User is not of type client.')
 
-        instance.ordered_products.set(product_ids)
+            instance.ordered_products.set(product_ids)
 
-        if len(order_data) > 0:
-            for product_name, quantity in order_data.items():
-                try:
-                    product = Product.objects.get(title__iexact=product_name)
-                except Product.DoesNotExist:
-                    raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
-                order_quantities_update[product.id] = quantity
-            instance.order_and_quantities = order_quantities_update
+            if len(order_data) > 0:
+                for product_name, quantity in order_data.items():
+                    try:
+                        product = Product.objects.get(title__iexact=product_name)
+                    except Product.DoesNotExist:
+                        raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
+                    order_quantities_update[product.id] = quantity
+                instance.order_and_quantities = order_quantities_update
 
-        instance.save()
+            instance.save()
         return instance
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['client'] = ClientSerializer(instance.client).data
-        representation['ordered_products'] = CustomProductSerializer(instance.products.all(), many=True).data
+        representation['ordered_products'] = CustomProductSerializer(instance.ordered_products.all(), many=True).data
         return representation
 
     def generate_tracking_number(self, client_order):

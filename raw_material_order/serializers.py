@@ -27,24 +27,26 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         raw_materials_ordered_data = validated_data.pop('raw_materials_order', [])
         rawmats_ids = validated_data.pop('raw_materials', [])
-        rawmats_order = RawMaterialOrder.objects.create(**validated_data)
 
-        if rawmats_order.supplier.type_of_user != 'S':
-            raise serializers.ValidationError('Supplier not found or wrong type.')
+        with transaction.atomic():
+            rawmats_order = RawMaterialOrder.objects.create(**validated_data)
 
-        rawmats_order.raw_materials.set(rawmats_ids)
-        raw_materials_specifics = {}
+            if rawmats_order.supplier.type_of_user != 'S':
+                raise serializers.ValidationError('Supplier not found or wrong type.')
 
-        if raw_materials_ordered_data:
-            for raw_material_name, quantity in raw_materials_ordered_data.items():
-                try:
-                    raw_material = RawMaterial.objects.get(name=raw_material_name)
-                except RawMaterial.DoesNotExist:
-                    raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
-                raw_materials_specifics[raw_material.id] = quantity
+            rawmats_order.raw_materials.set(rawmats_ids)
+            raw_materials_specifics = {}
 
-        rawmats_order.raw_materials_order = raw_materials_specifics
-        rawmats_order.save()
+            if raw_materials_ordered_data:
+                for raw_material_name, quantity in raw_materials_ordered_data.items():
+                    try:
+                        raw_material = RawMaterial.objects.get(name=raw_material_name)
+                    except RawMaterial.DoesNotExist:
+                        raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
+                    raw_materials_specifics[raw_material.id] = quantity
+
+            rawmats_order.raw_materials_order = raw_materials_specifics
+            rawmats_order.save()
         return rawmats_order
 
     def update(self, instance, validated_data):
@@ -52,23 +54,24 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This order has already been completed.')
 
         raw_materials_ordered_data = validated_data.pop('raw_materials_order', [])
-        instance = super().update(instance, validated_data)
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
 
-        if instance.supplier.type_of_user != 'S':
-            raise serializers.ValidationError('Supplier not found or wrong type.')
+            if instance.supplier.type_of_user != 'S':
+                raise serializers.ValidationError('Supplier not found or wrong type.')
 
-        rawmats_order_update = {}
+            rawmats_order_update = {}
 
-        if len(raw_materials_ordered_data) > 0:
-            for raw_material_name, quantity in raw_materials_ordered_data.items():
-                try:
-                    raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
-                except RawMaterial.DoesNotExist:
-                    raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
-                rawmats_order_update[raw_material.id] = quantity
-            instance.raw_materials_order = rawmats_order_update
+            if len(raw_materials_ordered_data) > 0:
+                for raw_material_name, quantity in raw_materials_ordered_data.items():
+                    try:
+                        raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
+                    except RawMaterial.DoesNotExist:
+                        raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
+                    rawmats_order_update[raw_material.id] = quantity
+                instance.raw_materials_order = rawmats_order_update
 
-        instance.save()
+            instance.save()
         return instance
 
     def to_representation(self, instance):
@@ -91,5 +94,3 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                     raw_material.save()
         else:
             super().save(*args, **kwargs)
-
-
