@@ -6,7 +6,6 @@ from client_order.serializers import ClientOrderSerializer
 from factoryforge.permissions.permissions import ReadOnly
 
 
-# Create your views here.
 class ClientOrderListCreateView(ListCreateAPIView):
     queryset = ClientOrder.objects.all()
     serializer_class = ClientOrderSerializer

@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser, Permission, Group
 from django.db import models
 
 
-# Create your models here.
 class BasicUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

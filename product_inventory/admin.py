@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import ProductInventory
 
-# Define the admin class for ProductInventory
+
 class ProductInventoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'user', 'last_restock')
     search_fields = ('name', 'user__username')

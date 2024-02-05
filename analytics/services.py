@@ -2,6 +2,7 @@ from client_order.models import ClientOrder
 from raw_material.models import RawMaterial
 from raw_material_order.models import RawMaterialOrder
 
+
 #######################################################################################################
 
 def calculate_total_income(start_date, end_date):

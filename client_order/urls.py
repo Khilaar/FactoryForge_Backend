@@ -1,6 +1,6 @@
 from django.urls import path
-
 from client_order.views import ClientOrderListCreateView, RetrieveUpdateDeleteClientOrder, ClientOrderHistoryListView
+
 
 urlpatterns = [
     path('', ClientOrderListCreateView.as_view()),

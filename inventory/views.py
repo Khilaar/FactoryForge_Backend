@@ -7,7 +7,6 @@ from inventory.serializers import InventorySerializer, RawMaterialSerializer
 from raw_material.models import RawMaterial
 
 
-
 #######################################################################################################
 
 #Here we Can create an view an Inventory. The User at the moment can create only one inventory

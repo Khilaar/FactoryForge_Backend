@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,6 +6,7 @@ from rest_framework.views import APIView
 from analytics.models import Analytics
 from analytics.serializers import AnalyticsSerializer
 from analytics.services import calculate_profit
+
 
 #######################################################################################################
 

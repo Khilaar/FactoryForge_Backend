@@ -2,6 +2,7 @@ from django.urls import path
 
 from inventory.views import ListCreateInventoryView, RawMaterialsByInventoryView, RawMaterialDetailView
 
+
 urlpatterns = [
     #Create an inventory with post-request
     path('create/', ListCreateInventoryView.as_view()),

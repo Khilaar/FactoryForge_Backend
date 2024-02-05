@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from raw_material.models import RawMaterial
 
 
