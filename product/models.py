@@ -10,7 +10,7 @@ class Product(models.Model):
         (3, 'Quality Control'),
         (4, 'Completed')
     ]
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=250, unique=True)
     description = models.TextField(blank=True, null=True)
     quantity_available = models.IntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=5)

@@ -6,7 +6,7 @@ from rest_framework import serializers
 from client_order.models import ClientOrder
 from custom_user.models import CustomUser
 from product.models import Product
-
+from raw_material.models import RawMaterial
 
 class ProductQuantitySerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
@@ -59,9 +59,23 @@ class ClientOrderSerializer(serializers.ModelSerializer):
             client_order.save()
         return client_order
 
+    def update_raw_material_stock(self, order_quantities):
+        for product_id, quantity in order_quantities.items():
+            try:
+                raw_material = RawMaterial.objects.get(ordered_products__id=product_id)
+            except RawMaterial.DoesNotExist:
+                raise serializers.ValidationError(f'RawMaterial for product ID {product_id} does not exist.')
+
+            if raw_material.quantity_available < quantity:
+                raise serializers.ValidationError(f'Insufficient stock for RawMaterial {raw_material.name}.')
+
+            raw_material.quantity_available -= quantity
+            raw_material.save()
+
     def update(self, instance, validated_data):
         if instance.order_status == 6:
             raise serializers.ValidationError('This order has already been completed.')
+        order_status = validated_data.get('order_status', None)
 
         order_data = validated_data.pop('order_and_quantities', [])
         product_ids = validated_data.pop('ordered_products', [])
@@ -82,7 +96,11 @@ class ClientOrderSerializer(serializers.ModelSerializer):
                     except Product.DoesNotExist:
                         raise serializers.ValidationError(f'Product "{product_name}" does not exist.')
                     order_quantities_update[product.id] = quantity
+
                 instance.order_and_quantities = order_quantities_update
+
+            if order_status == 6:
+                self.update_raw_material_stock(order_quantities_update)
 
             instance.save()
         return instance
