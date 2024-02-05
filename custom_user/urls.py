@@ -2,6 +2,7 @@ from django.urls import path
 from .views import UserSingleView, UserListCreateUserView, RetrieveUpdateDeleteUserView, CurrentUserView, \
     CurrentUserUpdateView
 
+
 urlpatterns = [
     path("", UserListCreateUserView.as_view()),
     path('<int:pk>/', UserSingleView.as_view(), name='user-detail'),

@@ -3,7 +3,6 @@ from django.db import models
 from product_inventory.models import ProductInventory
 
 
-# Create your models here.
 class Product(models.Model):
     STATUS_CHOICES = [
         (1, 'Created'),

@@ -8,7 +8,6 @@ from raw_material_order.serializers import RawMaterialOrderSerializer
 from supplier.serializers import SupplierSerializer
 
 
-# Create your views here.
 class SupplierListView(ListAPIView):
     serializer_class = SupplierSerializer
     permission_classes = [IsAuthenticated | ReadOnly]

@@ -1,9 +1,7 @@
 from django.db import models
-
 from analytics.models import Analytics
 
 
-# Create your models here.
 class RawMaterialOrder(models.Model):
     STATUS_CHOICES = [
         (1, 'Ordered'),

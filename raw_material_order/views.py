@@ -6,7 +6,6 @@ from raw_material_order.models import RawMaterialOrder
 from raw_material_order.serializers import RawMaterialOrderSerializer
 
 
-# Create your views here.
 class RawMaterialOrderListCreateView(ListCreateAPIView):
     queryset = RawMaterialOrder.objects.all()
     serializer_class = RawMaterialOrderSerializer
