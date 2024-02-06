@@ -2,7 +2,7 @@ from django.db import models
 
 
 class RawMaterial(models.Model):
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, unique=True)
     quantity_available = models.IntegerField(default=0)
     restock_required = models.BooleanField(default=False)
     max_quantity = models.IntegerField(default=0)
