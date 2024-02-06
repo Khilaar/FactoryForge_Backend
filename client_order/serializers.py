@@ -6,6 +6,7 @@ from rest_framework import serializers
 from client_order.models import ClientOrder, OrderedProduct
 from custom_user.models import CustomUser
 from product.models import Product
+from raw_material.models import RawMaterial
 
 
 class OrderedProductSerializer(serializers.ModelSerializer):
@@ -32,7 +33,8 @@ class ClientOrderSerializer(serializers.ModelSerializer):
                   'tracking_number']
 
     def create(self, validated_data):
-        if validated_data.client.type_of_user != 'C':
+        user_type = validated_data.get('client')
+        if user_type.type_of_user != 'C':
             raise serializers.ValidationError('User is not of type client.')
 
         ordered_products_data = validated_data.pop('ordered_products', [])
@@ -62,7 +64,7 @@ class ClientOrderSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             instance = super().update(instance, validated_data)
             user_type = validated_data.get('client')
-            if instance.client.type_of_user != 'C' or user_type.type_of_user != 'C':
+            if user_type and user_type.type_of_user != 'C':
                 raise serializers.ValidationError('User is not of type client.')
 
             if len(products_data) > 0:
@@ -89,6 +91,12 @@ class ClientOrderSerializer(serializers.ModelSerializer):
                         OrderedProduct.objects.create(client_order=instance, product=product, quantity=p_quantity)
                 OrderedProduct.objects.filter(client_order=instance).exclude(
                     product__title__in=[p['product'] for p in products_data]).delete()
+            instance.nr_products = len(instance.ordered_products.all())
+            instance.save()
+
+            if instance.order_status == 6:
+                self.adjust_raw_material_inventory()
+
         return instance
 
     def to_representation(self, instance):
@@ -103,3 +111,34 @@ class ClientOrderSerializer(serializers.ModelSerializer):
         unique_info = f'{client_order.client.id}'
         tracking_number = f'TN-{unique_info}-{unique_id}'
         return tracking_number
+
+    def adjust_raw_material_inventory(self):
+        with transaction.atomic():
+            products_data = self.data.get('ordered_products')
+            if products_data:
+                product_ids = [p.get('product') for p in products_data]
+                products = Product.objects.filter(id__in=product_ids)
+                product_map = {product.id: product for product in products}
+
+                for p in products_data:
+                    product_id = p.get('product')
+                    product_quantity = p.get('quantity')
+                    product_requirements = product_map[product_id].raw_material_requirements
+
+                    for raw_mat_id, required_quantity in product_requirements.items():
+                        try:
+                            raw_material = RawMaterial.objects.get(id=raw_mat_id)
+                        except RawMaterial.DoesNotExist:
+                            raise serializers.ValidationError(f"RawMaterial {raw_mat_id} does not exist")
+
+                        total_required_quantity = required_quantity * product_quantity
+
+                        if raw_material.quantity_available >= total_required_quantity:
+                            raw_material.quantity_available -= total_required_quantity
+                        else:
+                            p_name = product_map[product_id].title
+                            raise serializers.ValidationError(
+                                f"{raw_material.name}: only {raw_material.quantity_available} in storage. "
+                                f"{total_required_quantity} are required for {p_name}.")
+
+                        raw_material.save()
