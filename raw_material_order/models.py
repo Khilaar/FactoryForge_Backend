@@ -18,7 +18,8 @@ class RawMaterialOrder(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
-    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, default=None, null=True, related_name='raw_material_orders')
+    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, default=None, null=True,
+                                  related_name='raw_material_orders')
 
     def __str__(self):
         return self.supplier.username
