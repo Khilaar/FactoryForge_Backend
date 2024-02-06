@@ -17,9 +17,13 @@ def calculate_total_income(start_date, end_date):
 
     total_income = 0
     for order in client_orders:
-        if order.order_and_quantities is not None:
-            for product, quantity in order.order_and_quantities.items():
-                price = product.objects.get(title=product).price
+        ordered_products = order.orderedproduct_set.all()
+
+        if ordered_products is not None:
+
+            for ordered_product in ordered_products:
+                price = ordered_product.product.price
+                quantity = ordered_product.quantity
                 total_income += price * quantity
 
     return total_income
