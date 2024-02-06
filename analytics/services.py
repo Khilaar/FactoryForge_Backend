@@ -48,6 +48,8 @@ def calculate_total_cost(start_date, end_date):
 #######################################################################################################
 
 def calculate_profit(start_date, end_date):
-    total_profit = calculate_total_income(start_date, end_date) - calculate_total_cost(start_date, end_date)
+    total_income = calculate_total_income(start_date, end_date)
+    total_cost = calculate_total_cost(start_date, end_date)
+    total_profit = total_income - total_cost
 
     return total_profit
