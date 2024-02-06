@@ -8,7 +8,6 @@ from product.serializers import ProductSerializer
 from raw_material.models import RawMaterial
 
 
-# Create your views here.
 class ListCreateProductView(ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer

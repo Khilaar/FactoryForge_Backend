@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
 class RawMaterial(models.Model):
     name = models.CharField(max_length=250)
     quantity_available = models.IntegerField(default=0)

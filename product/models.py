@@ -3,7 +3,6 @@ from django.db import models
 from product_inventory.models import ProductInventory
 
 
-# Create your models here.
 class Product(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True)

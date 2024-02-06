@@ -3,7 +3,6 @@ from django.contrib import admin
 from basic_user.models import BasicUser
 
 
-# Register your models here.
 @admin.register(BasicUser)
 # Register your models here.
 class CustomUserAdmin(admin.ModelAdmin):
