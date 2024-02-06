@@ -40,7 +40,7 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
             if raw_materials_ordered_data:
                 for raw_material_name, quantity in raw_materials_ordered_data.items():
                     try:
-                        raw_material = RawMaterial.objects.get(name=raw_material_name)
+                        raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
                     except RawMaterial.DoesNotExist:
                         raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
                     if raw_material.max_quantity < quantity:
