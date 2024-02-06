@@ -43,6 +43,8 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                         raw_material = RawMaterial.objects.get(name=raw_material_name)
                     except RawMaterial.DoesNotExist:
                         raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
+                    if raw_material.max_quantity < quantity:
+                        raise serializers.ValidationError(f"{quantity} exceeds {raw_material.name} max quantity {raw_material.max_quantity}")
                     raw_materials_specifics[raw_material.id] = quantity
 
             rawmats_order.raw_materials_order = raw_materials_specifics
@@ -68,7 +70,11 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                         raw_material = RawMaterial.objects.get(name__iexact=raw_material_name)
                     except RawMaterial.DoesNotExist:
                         raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
-                    rawmats_order_update[raw_material.id] = quantity
+                    if raw_material.max_quantity > quantity:
+                        rawmats_order_update[raw_material.id] = quantity
+                    else:
+                        raise serializers.ValidationError(
+                            f"{quantity} exceeds {raw_material.name} maximum quantity of {raw_material.max_quantity}")
                 instance.raw_materials_order = rawmats_order_update
 
             instance.save()
@@ -90,7 +96,12 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                         raw_material = RawMaterial.objects.get(id=raw_material_id)
                     except RawMaterial.DoesNotExist:
                         raise serializers.ValidationError(f'RawMaterial with ID "{raw_material_id}" does not exist')
-                    raw_material.quantity_available += quantity
+                    to_update = raw_material.quantity_available + quantity
+                    if to_update <= raw_material.max_quantity:
+                        raw_material.quantity_available += quantity
+                    else:
+                        raise serializers.ValidationError(
+                            f"{to_update} exceeds {raw_material.name}'s maximum storage of {raw_material.max_quantity} ")
                     raw_material.save()
         else:
             super().save(*args, **kwargs)
