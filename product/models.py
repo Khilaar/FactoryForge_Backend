@@ -4,7 +4,7 @@ from product_inventory.models import ProductInventory
 
 
 class Product(models.Model):
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=250, unique=True)
     description = models.TextField(blank=True, null=True)
     quantity_available = models.IntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=5)
