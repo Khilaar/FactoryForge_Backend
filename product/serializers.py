@@ -13,7 +13,7 @@ class RawMaterialRequirementSerializer(serializers.Serializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'title', 'description', 'quantity_available', 'price', 'production_status', 'production_cost',
+        fields = ['id', 'title', 'description', 'quantity_available', 'price', 'production_cost',
                   'category', 'raw_materials', 'raw_material_requirements']
 
     def create(self, validated_data):
