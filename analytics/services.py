@@ -20,12 +20,14 @@ def calculate_total_income(start_date, end_date):
         ordered_products = order.orderedproduct_set.all()
 
         if ordered_products is not None:
+
             for ordered_product in ordered_products:
                 price = ordered_product.product.price
                 quantity = ordered_product.quantity
                 total_income += price * quantity
 
     return total_income
+
 
 #######################################################################################################
 
@@ -43,6 +45,7 @@ def calculate_total_cost(start_date, end_date):
                 total_cost += cost * quantity
 
     return total_cost
+
 
 #######################################################################################################
 
