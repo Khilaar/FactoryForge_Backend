@@ -142,3 +142,5 @@ class ClientOrderSerializer(serializers.ModelSerializer):
                                 f"{total_required_quantity} are required for {p_name}.")
 
                         raw_material.save()
+            else:
+                raise serializers.ValidationError("No products found.")
