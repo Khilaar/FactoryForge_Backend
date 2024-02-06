@@ -6,7 +6,7 @@ from client_order.models import ClientOrder, OrderedProduct
 # Register your models here.
 class ClientOrderAdmin(admin.ModelAdmin):
     list_display = (
-        'client', 'due_date', 'created', 'order_status', 'processing_time', 'nr_products',
+        'id', 'client', 'due_date', 'created', 'order_status', 'processing_time', 'nr_products',
         'nr_products_completed',)
 
 
