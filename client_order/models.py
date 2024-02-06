@@ -31,6 +31,7 @@ class ClientOrder(models.Model):
                                   blank=True, null=True)
 
 
+
 class OrderedProduct(models.Model):
     OP_STATUS_CHOICES = [
         (1, 'Created'),

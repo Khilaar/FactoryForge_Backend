@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from django.utils import timezone
+
 from client_order.models import ClientOrder
 from raw_material.models import RawMaterial
 from raw_material_order.models import RawMaterialOrder
@@ -6,6 +10,9 @@ from raw_material_order.models import RawMaterialOrder
 #######################################################################################################
 
 def calculate_total_income(start_date, end_date):
+    start_date = timezone.make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
+    end_date = timezone.make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
+
     client_orders = ClientOrder.objects.filter(created__range=[start_date, end_date])
 
     total_income = 0
@@ -20,6 +27,9 @@ def calculate_total_income(start_date, end_date):
 #######################################################################################################
 
 def calculate_total_cost(start_date, end_date):
+    start_date = timezone.make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
+    end_date = timezone.make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
+
     raw_material_orders = RawMaterialOrder.objects.filter(order_date__range=[start_date, end_date])
 
     total_cost = 0
