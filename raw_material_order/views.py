@@ -7,9 +7,12 @@ from raw_material_order.serializers import RawMaterialOrderSerializer
 
 
 class RawMaterialOrderListCreateView(ListCreateAPIView):
-    queryset = RawMaterialOrder.objects.all()
     serializer_class = RawMaterialOrderSerializer
     permission_classes = [IsAuthenticated | ReadOnly]
+
+    def get_queryset(self):
+        queryset = RawMaterialOrder.objects.all().exclude(status=3)
+        return queryset
 
 
 class RetrieveUpdateDeleteRawMaterialOrder(RetrieveUpdateDestroyAPIView):
@@ -19,3 +22,10 @@ class RetrieveUpdateDeleteRawMaterialOrder(RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'raw_material_order_id'
 
 
+class RawMaterialOrderHistoryListView(ListCreateAPIView):
+    serializer_class = RawMaterialOrderSerializer
+    permission_classes = [IsAuthenticated | ReadOnly]
+
+    def get_queryset(self):
+        queryset = RawMaterialOrder.objects.all().filter(status=3)
+        return queryset
