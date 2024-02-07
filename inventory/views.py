@@ -46,7 +46,7 @@ class RawMaterialDetailView(RetrieveAPIView):
 
         if obj is None:
             raise ValidationError("No such RawMaterial")
-        self.check_object_permissions(self.request, obj)
+
         return obj
 
 #######################################################################################################

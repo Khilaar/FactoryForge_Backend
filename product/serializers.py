@@ -14,7 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'title', 'description', 'quantity_available', 'price', 'production_cost',
-                  'category', 'raw_materials', 'raw_material_requirements']
+                  'category', 'raw_material_requirements']
 
     def create(self, validated_data):
         requirements_data = validated_data.pop('raw_material_requirements', [])
