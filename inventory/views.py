@@ -3,7 +3,7 @@ from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveAPIV
 from rest_framework.permissions import IsAuthenticated
 from factoryforge.permissions.permissions import ReadOnly
 from inventory.models import Inventory
-from inventory.serializers import InventorySerializer, RawMaterialSerializer
+from inventory.serializers import InventorySerializer, RawMaterialInventorySerializer
 from raw_material.models import RawMaterial
 
 
@@ -19,7 +19,7 @@ class ListCreateInventoryView(ListCreateAPIView):
 
 #Here we can get the items in the inventory by inserting the inventory name in the url
 class RawMaterialsByInventoryView(ListAPIView):
-    serializer_class = RawMaterialSerializer
+    serializer_class = RawMaterialInventorySerializer
     def get_queryset(self):
         inventory_name = Inventory.objects.first()
         return RawMaterial.objects.filter(inventory__name=inventory_name)
@@ -28,7 +28,7 @@ class RawMaterialsByInventoryView(ListAPIView):
 
 #Here we can get the details of a single item of the inventory (raw_material) by adding the name into the url
 class RawMaterialDetailView(RetrieveAPIView):
-    serializer_class = RawMaterialSerializer
+    serializer_class = RawMaterialInventorySerializer
 
     def get_queryset(self):
         inventory_name = Inventory.objects.first()
