@@ -27,7 +27,7 @@ class ClientOrder(models.Model):
     nr_products = models.IntegerField(default=0)
     nr_products_completed = models.IntegerField(default=0)
     tracking_number = models.CharField(max_length=250, blank=True, null=True)
-    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, related_name='client_orders', default=None,
+    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, related_name='client_orders', default="Analytics",
                                   blank=True, null=True)
 
 
