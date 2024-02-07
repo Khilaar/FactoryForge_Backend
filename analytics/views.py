@@ -25,8 +25,8 @@ class ProfitView(APIView):
     permission_classes = [IsAuthenticated | ReadOnly]
 
     def get(self, request):
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
 
         results = calculate_profit(start_date, end_date)
         return Response(results)
@@ -38,8 +38,8 @@ class UsedRawMaterialsSoldProductsView(ListAPIView):
     permission_classes = [IsAuthenticated | ReadOnly]
 
     def get(self, request, *args, **kwargs):
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
 
         results = used_rawmats_and_sold_products(start_date, end_date)
         used_material = results[0]
