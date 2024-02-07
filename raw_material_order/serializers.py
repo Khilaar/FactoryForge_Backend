@@ -1,7 +1,9 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 
 from custom_user.models import CustomUser
+from inventory.models import Inventory
 from raw_material.models import RawMaterial
 from raw_material_order.models import RawMaterialOrder
 
@@ -44,7 +46,8 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                     except RawMaterial.DoesNotExist:
                         raise serializers.ValidationError(f'RawMaterial "{raw_material_name}" does not exist')
                     if raw_material.max_quantity < quantity:
-                        raise serializers.ValidationError(f"{quantity} exceeds {raw_material.name} max quantity {raw_material.max_quantity}")
+                        raise serializers.ValidationError(
+                            f"{quantity} exceeds {raw_material.name} max quantity {raw_material.max_quantity}")
                     raw_materials_specifics[raw_material.id] = quantity
 
             rawmats_order.raw_materials_order = raw_materials_specifics
@@ -76,7 +79,6 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                         raise serializers.ValidationError(
                             f"{quantity} exceeds {raw_material.name} maximum quantity of {raw_material.max_quantity}")
                 instance.raw_materials_order = rawmats_order_update
-
             instance.save()
         return instance
 
@@ -103,5 +105,13 @@ class RawMaterialOrderSerializer(serializers.ModelSerializer):
                         raise serializers.ValidationError(
                             f"{to_update} exceeds {raw_material.name}'s maximum storage of {raw_material.max_quantity} ")
                     raw_material.save()
+                self.update_inventory_last_restock()
         else:
             super().save(*args, **kwargs)
+
+    def update_inventory_last_restock(self):
+        inventory = Inventory.objects.all().first()
+        if not inventory:
+            raise serializers.ValidationError('Create an inventory first')
+        inventory.last_restock = timezone.now()
+        inventory.save()

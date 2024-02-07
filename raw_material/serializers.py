@@ -16,8 +16,6 @@ class RawMaterialSerializer(serializers.ModelSerializer):
         validated_data['inventory'] = inventory
         return RawMaterial.objects.create(**validated_data)
 
-
-
     def save(self, **kwargs):
         instance = super().save(**kwargs)
         if instance.quantity_available > instance.max_quantity:
