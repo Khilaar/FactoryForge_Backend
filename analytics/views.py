@@ -1,4 +1,3 @@
-from decimal import Decimal
 
 from rest_framework.generics import ListCreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated

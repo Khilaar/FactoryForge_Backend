@@ -1,7 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
-
 from custom_user.models import CustomUser
 from inventory.models import Inventory
 from raw_material.models import RawMaterial

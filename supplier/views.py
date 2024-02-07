@@ -36,7 +36,7 @@ class SupplierHistoryView(ListAPIView):
         supplier_id = self.kwargs['supplier_id']
         try:
             supplier = CustomUser.objects.get(id=supplier_id, type_of_user='S')
-        except:
+        except CustomUser.DoesNotExist:
             raise serializers.ValidationError('Supplier not found.')
 
         queryset = RawMaterialOrder.objects.filter(supplier=supplier_id)

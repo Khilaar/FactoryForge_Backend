@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db.models import Q
 from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 
 from analytics import serializers
 from client_order.models import ClientOrder
@@ -58,7 +59,7 @@ def calculate_total_cost(start_date, end_date):
                 try:
                     raw_material = RawMaterial.objects.get(id=material)
                 except RawMaterial.DoesNotExist:
-                    raise serializers.ValidationError(f"RawMaterial with ID {material} does not exist.")
+                    raise ValidationError(f"RawMaterial with ID {material} does not exist.")
                 cost = raw_material.cost
                 total_cost += cost * quantity
 
