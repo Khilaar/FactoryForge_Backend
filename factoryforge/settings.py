@@ -30,7 +30,7 @@ SERVER_TYPE = os.environ.get('SERVER_TYPE', 'dev')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [".herokuapp.com"]
 
 if SERVER_TYPE == 'dev':
     ALLOWED_HOSTS += ['127.0.0.1', 'localhost']
