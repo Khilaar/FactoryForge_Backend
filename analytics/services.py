@@ -58,32 +58,40 @@ def calculate_profit(start_date, end_date):
     return total_profit
 
 
-def quantity_of_used_raw_materials(start_date, end_date):
+def used_rawmats_and_sold_products(start_date, end_date):
     start_date = timezone.make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
     end_date = timezone.make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
 
     client_orders = ClientOrder.objects.all().filter(created__range=[start_date, end_date])
     all_raw_mats = {}
+    sold_products = {}
+
     for order in client_orders:
-            ordered_products = order.orderedproduct_set.all()
-            for p in ordered_products:
-                product = Product.objects.get(id=p.product_id)
-                raw_materials_list = product.raw_material_requirements
-                for raw_material_id, quantity in raw_materials_list.items():
-                    if raw_material_id in all_raw_mats:
-                        all_raw_mats[raw_material_id] += quantity
-                    else:
-                        all_raw_mats[raw_material_id] = quantity
+        ordered_products = order.orderedproduct_set.all()
+        for p in ordered_products:
+            product = Product.objects.get(id=p.product_id)
+            add_product_to_sold_products(sold_products, product, p.quantity)
+            add_raw_material_to_allrawmats(all_raw_mats, product.raw_material_requirements)
+
     converted_list = convert_raw_materials(all_raw_mats)
-    return converted_list
+    return [converted_list, sold_products]
 
 
-    print("test")
+def add_product_to_sold_products(sold_products, product, quantity):
+    if product.title in sold_products:
+        sold_products[product.title] += quantity
+    else:
+        sold_products[product.title] = quantity
+    return sold_products
 
 
-def quantity_of_sold_products(start_date, end_date):
-    start_date = timezone.make_aware(datetime.strptime(start_date, "%Y-%m-%d"))
-    end_date = timezone.make_aware(datetime.strptime(end_date, "%Y-%m-%d"))
+def add_raw_material_to_allrawmats(all_raw_mats, raw_materials_list):
+    for raw_material_id, quantity in raw_materials_list.items():
+        if raw_material_id in all_raw_mats:
+            all_raw_mats[raw_material_id] += quantity
+        else:
+            all_raw_mats[raw_material_id] = quantity
+    return all_raw_mats
 
 
 def convert_raw_materials(raw_materials):
