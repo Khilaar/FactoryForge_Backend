@@ -1,6 +1,5 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
-
 from factoryforge.permissions.permissions import ReadOnly
 from raw_material_order.models import RawMaterialOrder
 from raw_material_order.serializers import RawMaterialOrderSerializer
