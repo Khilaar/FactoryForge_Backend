@@ -11,7 +11,7 @@ from .serializers import UserSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
-#Get all users
+# Get all users
 class UserListCreateUserView(ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -24,14 +24,14 @@ class UserListCreateUserView(ListCreateAPIView):
         return CustomUser.objects.all()
 
 
-#Get single user by id
+# Get single user by id
 class UserSingleView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated | ReadOnly]
 
 
-#Get logged in user (me)
+# Get logged in user (me)
 class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated | ReadOnly]
 
@@ -40,7 +40,7 @@ class CurrentUserView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-#Patch logged in user (me)
+# Patch logged in user (me)
 class CurrentUserUpdateView(UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -57,12 +57,9 @@ class CurrentUserUpdateView(UpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-#Delete and patch by id
-#Authorization added, can only patch and delete own user profile
+# Delete and patch by id
+# Authorization added, can only patch and delete own user profile
 class RetrieveUpdateDeleteUserView(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated | ReadOnly]
-
-
