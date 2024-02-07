@@ -63,6 +63,6 @@ class CurrentUserUpdateView(UpdateAPIView):
 class RetrieveUpdateDeleteUserView(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated | ReadOnly]
 
 
