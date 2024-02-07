@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from analytics.models import Analytics
 from analytics.serializers import AnalyticsSerializer
-from analytics.services import calculate_profit, quantity_of_used_raw_materials
+from analytics.services import calculate_profit, used_rawmats_and_sold_products
 from factoryforge.permissions.permissions import ReadOnly
 
 
@@ -32,23 +32,13 @@ class ProfitView(APIView):
 
 #######################################################################################################
 
-class UsedRawMaterialView(ListAPIView):
+class UsedRawMaterialsSoldProductsView(ListAPIView):
     permission_classes = [IsAuthenticated | ReadOnly]
     def get(self, request, *args, **kwargs):
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
-        used_material = quantity_of_used_raw_materials(start_date, end_date)
-        return Response({"Used Material": used_material})
-
-
-class SoldProductsView(ListAPIView):
-    permission_classes = [IsAuthenticated | ReadOnly]
-
-    def get(self, request, *args, **kwargs):
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-
-        sold_products = quantity_of_used_raw_materials(start_date, end_date)
-        return Response({"Sold Products": sold_products})
-
+        results = used_rawmats_and_sold_products(start_date, end_date)
+        used_material = results[0]
+        sold_products = results[1]
+        return Response([{"Used Material": used_material}, {"Sold Products": sold_products}])

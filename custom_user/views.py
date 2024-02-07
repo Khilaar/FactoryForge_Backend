@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from factoryforge.permissions.permissions import ReadOnly
 from .models import CustomUser
 from .serializers import UserSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -14,6 +15,7 @@ from .permissions import IsOwnerOrReadOnly
 class UserListCreateUserView(ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated | ReadOnly]
 
     def get_queryset(self):
         search = self.request.query_params.get('search')
@@ -26,11 +28,12 @@ class UserListCreateUserView(ListCreateAPIView):
 class UserSingleView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated | ReadOnly]
 
 
 #Get logged in user (me)
 class CurrentUserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated | ReadOnly]
 
     def get(self, request, *args, **kwargs):
         serializer = UserSerializer(request.user)
@@ -41,7 +44,7 @@ class CurrentUserView(APIView):
 class CurrentUserUpdateView(UpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated | ReadOnly]
 
     def get_object(self):
         return self.request.user
