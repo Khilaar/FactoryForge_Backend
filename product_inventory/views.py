@@ -25,4 +25,3 @@ class ProductsByInventoryView(ListAPIView):
 
 #######################################################################################################
 
-"""TODO: GET SINGLE PRODUCT IN INVENTORY (SEE INVENTORY APP)"""
