@@ -14,7 +14,7 @@ class ClientOrder(models.Model):
         (6, 'Completed')
     ]
 
-    client = models.ForeignKey('custom_user.CustomUser', on_delete=models.CASCADE)
+    client = models.ForeignKey('custom_user.CustomUser', on_delete=models.PROTECT)
     ordered_products = models.ManyToManyField('product.Product', through='OrderedProduct', related_name='client_orders',
                                               blank=True)
     client_note = models.TextField(blank=True, null=True)
@@ -27,8 +27,8 @@ class ClientOrder(models.Model):
     nr_products = models.IntegerField(default=0)
     nr_products_completed = models.IntegerField(default=0)
     tracking_number = models.CharField(max_length=250, blank=True, null=True)
-    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, related_name='client_orders', default="Analytics",
-                                  blank=True, null=True)
+    analytics = models.ForeignKey(Analytics, on_delete=models.PROTECT, related_name='client_orders', blank=True,
+                                  null=True)
 
 
 class OrderedProduct(models.Model):

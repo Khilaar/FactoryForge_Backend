@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 
 from client_order.models import ClientOrder, OrderedProduct
@@ -63,6 +64,7 @@ class ClientOrderSerializer(serializers.ModelSerializer):
 
         with transaction.atomic():
             instance = super().update(instance, validated_data)
+            instance.updated = timezone.now()
             user_type = validated_data.get('client')
             if user_type and user_type.type_of_user != 'C':
                 raise serializers.ValidationError('User is not of type client.')
