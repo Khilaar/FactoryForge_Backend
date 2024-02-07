@@ -24,17 +24,12 @@ class ListCreateAnalyticsView(ListCreateAPIView):
 class ProfitView(APIView):
     permission_classes = [IsAuthenticated | ReadOnly]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
         results = calculate_profit(start_date, end_date)
-        total_profit = results[0]
-        incomplete_income = results[1]
-        total_cost = results[2]
-
-        return Response(
-            [{"profit": total_profit}, {"Incomplete Income": incomplete_income}, {"Total Cost": total_cost}])
+        return Response(results)
 
 
 #######################################################################################################

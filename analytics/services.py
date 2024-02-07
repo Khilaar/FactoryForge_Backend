@@ -76,7 +76,7 @@ def calculate_profit(start_date, end_date):
     total_cost = calculate_total_cost(start_date, end_date)
     total_profit = total_income_complete - total_cost
 
-    return [total_profit, incomplete_income, total_cost]
+    return {"profit": total_profit, "Incomplete Income": incomplete_income, "Total Cost": total_cost}
 
 
 #######################################################################################################
