@@ -17,6 +17,7 @@ class InventorySerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
+
 #######################################################################################################
 
 class RawMaterialInventorySerializer(serializers.ModelSerializer):
@@ -25,4 +26,3 @@ class RawMaterialInventorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'quantity_available', 'restock_required', 'max_quantity', 'inventory']
 
 #######################################################################################################
-
