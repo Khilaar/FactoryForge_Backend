@@ -104,6 +104,7 @@ DATABASES = {
     }
 }
 
+
 # print(DATABASES)
 
 if SERVER_TYPE == 'prod':
