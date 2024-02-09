@@ -72,7 +72,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://factoryforge-5f88b931d18d.herokuapp.com/",
+    "https://factoryforge-5f88b931d18d.herokuapp.com",
     "http://localhost:8080",
     "http://127.0.0.1:9000",
 ]
