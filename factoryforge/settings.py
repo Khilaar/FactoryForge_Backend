@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     "basic_user",
     "custom_user",
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -67,6 +69,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://factoryforge-5f88b931d18d.herokuapp.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:9000",
 ]
 
 ROOT_URLCONF = "factoryforge.urls"
@@ -103,6 +111,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
     }
 }
+
 
 # print(DATABASES)
 
