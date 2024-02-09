@@ -75,6 +75,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://factoryforge-5f88b931d18d.herokuapp.com",
     "http://localhost:8080",
     "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
 ]
 
 ROOT_URLCONF = "factoryforge.urls"
