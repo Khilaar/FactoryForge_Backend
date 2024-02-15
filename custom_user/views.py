@@ -24,6 +24,15 @@ class UserListCreateUserView(ListCreateAPIView):
         return CustomUser.objects.all()
 
 
+class ClientsListCreateView(ListCreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated | ReadOnly]
+
+    def get_queryset(self):
+        queryset = CustomUser.objects.filter(type_of_user='C')
+        return queryset
+
+
 # Get single user by id
 class UserSingleView(RetrieveAPIView):
     queryset = CustomUser.objects.all()
