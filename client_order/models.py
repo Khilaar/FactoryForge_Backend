@@ -14,7 +14,7 @@ class ClientOrder(models.Model):
         (6, 'Completed')
     ]
 
-    client = models.ForeignKey('custom_user.CustomUser', on_delete=models.PROTECT)
+    client = models.ForeignKey('custom_user.CustomUser', on_delete=models.CASCADE)
     ordered_products = models.ManyToManyField('product.Product', through='OrderedProduct', related_name='client_orders',
                                               blank=True)
     client_note = models.TextField(blank=True, null=True)
