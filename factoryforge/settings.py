@@ -18,7 +18,6 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -34,7 +33,6 @@ ALLOWED_HOSTS = [".herokuapp.com"]
 
 if SERVER_TYPE == 'dev':
     ALLOWED_HOSTS += ['127.0.0.1', 'localhost']
-
 
 # Application definition
 
@@ -100,7 +98,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "factoryforge.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -114,7 +111,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
     }
 }
-
 
 # print(DATABASES)
 
@@ -139,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -150,7 +145,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -202,7 +196,7 @@ SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,  # Change settings to True to enable Django Login option
     'LOGIN_URL': 'admin/',  # URL For Django Login
     'LOGOUT_URL': 'admin/logout/',  # URL For Django Logout
-    'SECURITY_DEFINITIONS': { # Allows usage of Access token to make requests on the docs.
+    'SECURITY_DEFINITIONS': {  # Allows usage of Access token to make requests on the docs.
         'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',
