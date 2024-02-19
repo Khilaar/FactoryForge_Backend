@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
@@ -80,9 +81,14 @@ class ChangePasswordView(APIView):
     def patch(self, request):
         user = request.user
         new_password = request.data.get("new_password")
-        if new_password:
-            user.set_password(new_password)
-            user.save()
-            return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'New password not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        current_password = request.data.get("current_password")
+
+        if not current_password or not new_password:
+            return Response({'error': 'Current or new password not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not check_password(current_password, user.password):
+            return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
