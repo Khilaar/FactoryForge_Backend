@@ -72,3 +72,17 @@ class RetrieveUpdateDeleteUserView(RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated | ReadOnly]
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        user = request.user
+        new_password = request.data.get("new_password")
+        if new_password:
+            user.set_password(new_password)
+            user.save()
+            return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'New password not provided'}, status=status.HTTP_400_BAD_REQUEST)
